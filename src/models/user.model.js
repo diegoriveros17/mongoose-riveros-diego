@@ -1,0 +1,22 @@
+import { model, Schema } from "mongoose";
+
+const userShema = new Schema({
+  username: {
+    type: String,
+    require: true,
+    unique: true,
+  },
+
+  email: {
+    type: String,
+    require: true,
+    unique: true,
+  },
+
+  password: {
+    type: String,
+    require: true,
+  },
+});
+
+export const UserModel = model("User", userShema);
