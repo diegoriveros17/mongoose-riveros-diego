@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import { startDB } from "./src/config/database.js";
 import { UserModel } from "./src/models/user.model.js";
+import { ProfileModel } from "./src/models/profile.model.js";
 import { userRouter } from "./src/routes/user.routes.js";
 
 const app = express();
