@@ -32,10 +32,4 @@ userSchema.virtual("profile", {
   foreignField: "user",
 });
 
-userSchema.virtual("article", {
-  ref: "Articles",
-  localField: "_id",
-  foreignField: "user",
-});
-
 export const UserModel = model("User", userSchema);

@@ -3,19 +3,19 @@ import { UserModel } from "../models/user.model.js";
 
 export const createArticle = async (req, res) => {
   try {
-    const { title, content, excerpt, status, user_id } = req.body;
+    const { title, content, user_id } = req.body;
 
     const id = user_id;
 
     const article = await ArticleModel.create({
       title,
       content,
-      excerpt,
-      status,
-      user: id,
+      author: id,
     });
 
-    const articleWithAuthor = await ArticleModel.findById(id).populate("user");
+    const articleWithAuthor = await ArticleModel.findById(article.id).populate(
+      "author",
+    );
 
     return res.status(201).json({
       message: "Artículo creado correctamente",
