@@ -1,7 +1,20 @@
 import { Router } from "express";
-import { createArticle } from "../controllers/article.controller.js";
+import {
+  createArticle,
+  deleteArticle,
+  getAllArticles,
+  getArticleById,
+  updateArticle,
+} from "../controllers/article.controller.js";
 
 export const articleRouter = Router();
 
-// Crear artículo. (usuario autenticado)
 articleRouter.post("/articles", createArticle);
+
+articleRouter.get("/articles", getAllArticles);
+
+articleRouter.get("/articles/:id", getArticleById);
+
+articleRouter.put("/articles/:id", updateArticle);
+
+articleRouter.delete("/articles/:id", deleteArticle);
