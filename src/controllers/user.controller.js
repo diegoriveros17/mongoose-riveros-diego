@@ -1,8 +1,11 @@
+import { ProfileModel } from "../models/profile.model.js";
 import { UserModel } from "../models/user.model.js";
 
 export const insertUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, profile } = req.body;
+
+    const { first_name, last_name, biography, birth_date } = profile;
 
     const userExist = await UserModel.findOne(
       { username: username },
@@ -21,6 +24,14 @@ export const insertUser = async (req, res) => {
       password,
     });
 
+    await ProfileModel.create({
+      first_name,
+      last_name,
+      biography,
+      birth_date,
+      user: newUser.id,
+    });
+
     return res.status(201).json({ message: `Usuario creado correctamente` });
   } catch (error) {
     return res.status(500).json({
@@ -31,7 +42,7 @@ export const insertUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find().populate("profile");
 
     return res.status(200).json({
       msg: "Listado de usuarios obtenido correctamente",
@@ -48,7 +59,7 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const users = await UserModel.findById(id);
+    const users = await UserModel.findById(id).populate("profile");
 
     return res.status(200).json({
       msg: "Usuario obtenido correctamente",
@@ -68,6 +79,8 @@ export const updateUser = async (req, res) => {
 
     const { id } = req.params;
 
+    const { username, email, password, profile } = req.body;
+
     const userExist = await UserModel.findById(id);
 
     if (!userExist) {
@@ -77,13 +90,18 @@ export const updateUser = async (req, res) => {
     }
     const updatedUser = await UserModel.findByIdAndUpdate(
       id,
-      { $set: userData },
+      { $set: { username, email, password } },
       { new: true },
+    );
+
+    const updatedProfile = await ProfileModel.findOneAndUpdate(
+      { user: id },
+      { $set: profile },
     );
 
     return res.status(200).json({
       message: "Usuario modificado",
-      data: updatedUser,
+      data: { ...updatedUser.toObject(), profile: updatedProfile },
     });
   } catch (error) {
     res.status(500).json({
@@ -105,6 +123,8 @@ export const deleteUser = async (req, res) => {
     }
 
     const deletedUser = await UserModel.findByIdAndDelete(id);
+
+    const deletedProfile = await ProfileModel.findOneAndDelete({ user: id });
 
     return res.status(200).json({
       msg: "Usuario eliminado",

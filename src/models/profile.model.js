@@ -1,22 +1,32 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
-export const profileSchema = new Schema({
-  first_name: {
-    type: String,
-    require: true,
+const profileSchema = new Schema(
+  {
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+      required: true,
+    },
+    biography: {
+      type: String,
+      required: false,
+    },
+    birth_date: {
+      type: Date,
+      required: false,
+    },
+    user: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
-  last_name: {
-    type: String,
-    require: true,
+  {
+    versionKey: false,
   },
-  biography: {
-    type: String,
-    require: false,
-  },
-  birth_date: {
-    type: Date,
-    require: false,
-  },
-});
+);
 
 export const ProfileModel = model("Profile", profileSchema);
