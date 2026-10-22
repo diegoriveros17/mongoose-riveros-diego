@@ -1,6 +1,6 @@
 import express from "express";
 import "dotenv/config";
-import { startDB } from "./src/config/config.js";
+import { startDB } from "./src/config/database.js";
 import { UserModel } from "./src/models/user.model.js";
 import { userRouter } from "./src/routes/user.routes.js";
 
