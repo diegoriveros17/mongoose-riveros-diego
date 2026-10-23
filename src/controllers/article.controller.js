@@ -82,7 +82,7 @@ export const updateArticle = async (req, res) => {
     const updatedArticle = await ArticleModel.findByIdAndUpdate(
       id,
       { $set: data },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     return res.status(200).json({
