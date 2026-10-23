@@ -10,17 +10,6 @@ export const insertUser = async (req, res) => {
 
     const { first_name, last_name, biography, birth_date } = profile;
 
-    // const userExist = await UserModel.findOne(
-    //   { username: username },
-    //   { email: email },
-    // );
-
-    // if (userExist) {
-    //   return res.status(409).json({
-    //     msg: `El nombre de usuario o email ya se encuentra en uso`,
-    //   });
-    // }
-
     const newUser = await UserModel.create({
       username,
       email,
@@ -78,19 +67,14 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const userData = req.body;
+    // const userData = matchedData(req, { locations: ["body"] });
 
-    const { id } = req.params;
+    const { id } = matchedData(req, { locations: ["params"] });
 
-    const { username, email, password, profile } = req.body;
+    const { username, email, password, profile } = matchedData(req, {
+      locations: ["body"],
+    });
 
-    const userExist = await UserModel.findById(id);
-
-    if (!userExist) {
-      return res
-        .status(404)
-        .json({ msg: "El usuario que intenta modificar no existe" });
-    }
     const updatedUser = await UserModel.findByIdAndUpdate(
       id,
       { $set: { username, email, password } },
@@ -100,6 +84,7 @@ export const updateUser = async (req, res) => {
     const updatedProfile = await ProfileModel.findOneAndUpdate(
       { user: id },
       { $set: profile },
+      { returnDocument: "after" },
     );
 
     return res.status(200).json({

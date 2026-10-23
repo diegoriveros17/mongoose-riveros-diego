@@ -6,9 +6,7 @@ export const addTagToArticle = async (req, res) => {
   try {
     const { article_id, tag_id } = req.body;
 
-    const tagExist = await ArticleTagModel.findOne({
-      where: { article_id, tag_id },
-    });
+    const tagExist = await ArticleTagModel.findOne({ article_id, tag_id });
 
     if (tagExist) {
       return res.status(409).json({
