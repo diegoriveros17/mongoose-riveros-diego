@@ -1,22 +1,25 @@
 import { ProfileModel } from "../models/profile.model.js";
 import { UserModel } from "../models/user.model.js";
+import { matchedData } from "express-validator";
 
 export const insertUser = async (req, res) => {
   try {
-    const { username, email, password, profile } = req.body;
+    const { username, email, password, profile } = matchedData(req, {
+      locations: ["body"],
+    });
 
     const { first_name, last_name, biography, birth_date } = profile;
 
-    const userExist = await UserModel.findOne(
-      { username: username },
-      { email: email },
-    );
+    // const userExist = await UserModel.findOne(
+    //   { username: username },
+    //   { email: email },
+    // );
 
-    if (userExist) {
-      return res.status(409).json({
-        msg: `El nombre de usuario o email ya se encuentra en uso`,
-      });
-    }
+    // if (userExist) {
+    //   return res.status(409).json({
+    //     msg: `El nombre de usuario o email ya se encuentra en uso`,
+    //   });
+    // }
 
     const newUser = await UserModel.create({
       username,
