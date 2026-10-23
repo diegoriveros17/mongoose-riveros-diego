@@ -5,6 +5,7 @@ import { UserModel } from "./src/models/user.model.js";
 import { ProfileModel } from "./src/models/profile.model.js";
 import { ArticleModel } from "./src/models/article.model.js";
 import { TagModel } from "./src/models/tag.model.js";
+import { ArticleTagModel } from "./src/models/article_tag.model.js";
 import { userRouter } from "./src/routes/user.routes.js";
 import { articleRouter } from "./src/routes/article.routes.js";
 import { tagRouter } from "./src/routes/tag.routes.js";
