@@ -85,9 +85,13 @@ export const updateArticle = async (req, res) => {
       { returnDocument: "after" },
     );
 
+    const articleWithAuthor = await ArticleModel.findById(
+      updatedArticle.id,
+    ).populate("author");
+
     return res.status(200).json({
       msg: "Artículo actualizado correctamente",
-      article: updatedArticle,
+      article: articleWithAuthor,
     });
   } catch (error) {
     return res.status(500).json({
