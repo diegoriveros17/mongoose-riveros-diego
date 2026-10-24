@@ -67,8 +67,6 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    // const userData = matchedData(req, { locations: ["body"] });
-
     const { id } = matchedData(req, { locations: ["params"] });
 
     const { username, email, password, profile } = matchedData(req, {
@@ -101,14 +99,6 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const userExist = await UserModel.findById(id);
-
-    if (!userExist) {
-      return res.status(404).json({
-        message: "El usuario que intenta eliminar no existe",
-      });
-    }
 
     const deletedUser = await UserModel.findByIdAndDelete(id);
 
