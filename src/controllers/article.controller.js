@@ -1,16 +1,17 @@
 import { ArticleModel } from "../models/article.model.js";
 import { UserModel } from "../models/user.model.js";
+import { matchedData } from "express-validator";
 
 export const createArticle = async (req, res) => {
   try {
-    const { title, content, user_id } = req.body;
-
-    const id = user_id;
+    const { title, content, user_id } = matchedData(req, {
+      locations: ["body"],
+    });
 
     const article = await ArticleModel.create({
       title,
       content,
-      author: id,
+      author: user_id,
     });
 
     const articleWithAuthor = await ArticleModel.findById(article.id).populate(
@@ -45,15 +46,9 @@ export const getAllArticles = async (req, res) => {
 
 export const getArticleById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req, { locations: ["params"] });
 
     const article = await ArticleModel.findById(id).populate("author");
-
-    if (!article) {
-      return res.status(404).json({
-        msg: "El artículo solicitado no existe",
-      });
-    }
 
     return res.status(200).json({
       msg: "Artículo obtenido correctamente",
@@ -68,16 +63,10 @@ export const getArticleById = async (req, res) => {
 
 export const updateArticle = async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = req.body;
+    const { id } = matchedData(req, { locations: ["params"] });
+    const data = matchedData(req, { locations: ["body"] });
 
     const article = await ArticleModel.findById(id);
-
-    if (!article) {
-      return res.status(404).json({
-        msg: "El artículo que intenta actualizar no existe",
-      });
-    }
 
     const updatedArticle = await ArticleModel.findByIdAndUpdate(
       id,
@@ -102,14 +91,7 @@ export const updateArticle = async (req, res) => {
 
 export const deleteArticle = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const article = await ArticleModel.findById(id);
-    if (!article) {
-      return res.status(404).json({
-        msg: "El artículo que intenta eliminar no existe",
-      });
-    }
+    const { id } = matchedData(req, { locations: ["params"] });
 
     const deletedArticle = await ArticleModel.findByIdAndDelete(id);
 
