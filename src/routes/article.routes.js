@@ -11,7 +11,6 @@ import {
   removeTagFromArticle,
 } from "../controllers/articles_tags.controller.js";
 import {
-  createArticleTagValidation,
   createArticleValidation,
   updateArticleValidation,
   validateArticleId,
@@ -46,9 +45,9 @@ articleRouter.delete(
   deleteArticle,
 );
 
-articleRouter.post(
-  "/articles-tags",
-  createArticleTagValidation,
+articleRouter.get(
+  "/articles-tags/:article_id/:tag_id",
+  validateArticleTagId,
   validate,
   addTagToArticle,
 );

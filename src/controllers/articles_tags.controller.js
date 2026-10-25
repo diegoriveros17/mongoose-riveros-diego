@@ -3,7 +3,7 @@ import { matchedData } from "express-validator";
 
 export const addTagToArticle = async (req, res) => {
   try {
-    const { article_id, tag_id } = matchedData(req, { locations: ["body"] });
+    const { article_id, tag_id } = matchedData(req, { locations: ["params"] });
 
     const tagExist = await ArticleModel.findOne({
       _id: article_id,

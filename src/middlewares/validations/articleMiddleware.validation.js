@@ -99,33 +99,6 @@ export const updateArticleValidation = [
 ];
 
 // Article-Tag
-export const createArticleTagValidation = [
-  body("article_id")
-    .notEmpty()
-    .withMessage("El id del articulo es obligatorio")
-    .isMongoId()
-    .withMessage("El id no tiene el formato correcto")
-    .custom(async (article_id) => {
-      const article = await ArticleModel.findById(article_id);
-      if (!article) {
-        throw new Error("El artículo especificado no existe");
-      }
-      return true;
-    }),
-  body("tag_id")
-    .notEmpty()
-    .withMessage("El id de la etiqueta es obligatorio")
-    .isMongoId()
-    .withMessage("El id no tiene el formato correcto")
-    .custom(async (tag_id) => {
-      const tag = await TagModel.findById(tag_id);
-      if (!tag) {
-        throw new Error("La etiqueta especificada no existe");
-      }
-      return true;
-    }),
-];
-
 export const validateArticleTagId = [
   param("article_id")
     .notEmpty()
