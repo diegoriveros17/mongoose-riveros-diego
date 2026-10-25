@@ -31,7 +31,9 @@ export const createArticle = async (req, res) => {
 
 export const getAllArticles = async (req, res) => {
   try {
-    const articles = await ArticleModel.find().populate("author");
+    const articles = await ArticleModel.find()
+      .populate("author")
+      .populate("tags");
 
     return res.status(200).json({
       msg: "Artículos",
@@ -48,7 +50,9 @@ export const getArticleById = async (req, res) => {
   try {
     const { id } = matchedData(req, { locations: ["params"] });
 
-    const article = await ArticleModel.findById(id).populate("author");
+    const article = await ArticleModel.findById(id)
+      .populate("author")
+      .populate("tags");
 
     return res.status(200).json({
       msg: "Artículo obtenido correctamente",

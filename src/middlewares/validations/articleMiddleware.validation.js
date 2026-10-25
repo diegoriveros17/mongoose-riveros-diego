@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
 import { ArticleModel } from "../../models/article.model.js";
 import { UserModel } from "../../models/user.model.js";
-import { ArticleTagModel } from "../../models/article_tag.model.js";
+import { TagModel } from "../../models/tag.model.js";
 
 export const validateArticleId = [
   param("id")
@@ -26,7 +26,7 @@ export const createArticleValidation = [
     .custom(async (title) => {
       const articleTitle = await ArticleModel.findOne({ title });
       if (articleTitle) {
-        throw new Error("Ya existe un articulo con este nombre");
+        throw new Error("Ya existe un articulo con este titulo");
       }
       return true;
     }),
@@ -44,7 +44,10 @@ export const createArticleValidation = [
     .isMongoId()
     .withMessage("El id no tiene el formato correcto")
     .custom(async (user_id) => {
-      const user = await UserModel.findById(user_id);
+      const user = await UserModel.findOne({
+        _id: user_id,
+        deleted: { $ne: true },
+      });
       if (!user) {
         throw new Error(
           "El usuario con el que desea asociar el articulo no existe",
@@ -74,8 +77,8 @@ export const updateArticleValidation = [
     .withMessage("El título no puede estar vacío")
     .custom(async (title) => {
       const articleTitle = await UserModel.findOne({ title });
-      if (!articleTitle) {
-        throw new Error("Ya existe un articulo con este nombre");
+      if (articleTitle) {
+        throw new Error("Ya existe un articulo con este titulo");
       }
       return true;
     }),
@@ -124,17 +127,27 @@ export const createArticleTagValidation = [
 ];
 
 export const validateArticleTagId = [
-  param("articleTagId")
+  param("article_id")
     .notEmpty()
-    .withMessage("El id es obligatorio")
+    .withMessage("El id del artículo es obligatorio")
     .isMongoId()
     .withMessage("El id no tiene el formato correcto")
-    .custom(async (articleTagId) => {
-      const articleTag = await ArticleTagModel.findById(articleTagId);
-      if (!articleTag) {
-        throw new Error(
-          "La relación entre el artículo y la etiqueta no existe",
-        );
+    .custom(async (article_id) => {
+      const article = await ArticleModel.findById(article_id);
+      if (!article) {
+        throw new Error("El artículo especificado no existe");
+      }
+      return true;
+    }),
+  param("tag_id")
+    .notEmpty()
+    .withMessage("El id de la etiqueta es obligatorio")
+    .isMongoId()
+    .withMessage("El id no tiene el formato correcto")
+    .custom(async (tag_id) => {
+      const tag = await TagModel.findById(tag_id);
+      if (!tag) {
+        throw new Error("La etiqueta especificada no existe");
       }
       return true;
     }),

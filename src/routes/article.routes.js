@@ -11,9 +11,11 @@ import {
   removeTagFromArticle,
 } from "../controllers/articles_tags.controller.js";
 import {
+  createArticleTagValidation,
   createArticleValidation,
   updateArticleValidation,
   validateArticleId,
+  validateArticleTagId,
 } from "../middlewares/validations/articleMiddleware.validation.js";
 import { validate } from "../middlewares/validate.js";
 
@@ -44,10 +46,16 @@ articleRouter.delete(
   deleteArticle,
 );
 
-articleRouter.post("/articles-tags", validate, addTagToArticle);
+articleRouter.post(
+  "/articles-tags",
+  createArticleTagValidation,
+  validate,
+  addTagToArticle,
+);
 
 articleRouter.delete(
   "/articles-tags/:articleTagId",
+  validateArticleTagId,
   validate,
   removeTagFromArticle,
 );
