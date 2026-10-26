@@ -32,7 +32,7 @@ export const createArticle = async (req, res) => {
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.find()
-      .populate("author")
+      .populate({ path: "author", select: "-_id -password" })
       .populate("tags");
 
     return res.status(200).json({

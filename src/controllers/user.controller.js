@@ -27,7 +27,9 @@ export const insertUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.find({ deleted: { $ne: true } });
+    const users = await UserModel.find({ deleted: { $ne: true } }).populate(
+      "articles",
+    );
 
     return res.status(200).json({
       msg: "Listado de usuarios obtenido correctamente",
