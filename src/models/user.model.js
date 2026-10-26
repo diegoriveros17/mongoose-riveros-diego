@@ -18,18 +18,41 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    profile: {
+      first_name: {
+        type: String,
+        required: true,
+      },
+      last_name: {
+        type: String,
+        required: true,
+      },
+      biography: {
+        type: String,
+        required: false,
+      },
+      birth_date: {
+        type: Date,
+        required: false,
+      },
+    },
+
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     versionKey: false,
+    toJSON: { virtuals: true },
+    toJSON: { virtuals: true },
   },
 );
 
-userSchema.set("toJSON", { virtuals: true });
-userSchema.set("toObject", { virtuals: true });
-userSchema.virtual("profile", {
-  ref: "Profile",
+userSchema.virtual("articles", {
+  ref: "Article",
   localField: "_id",
-  foreignField: "user",
+  foreignField: "author",
 });
 
 export const UserModel = model("User", userSchema);
