@@ -1,8 +1,10 @@
+import { ArticleModel } from "../models/article.model.js";
 import { TagModel } from "../models/tag.model.js";
+import { matchedData } from "express-validator";
 
 export const createTag = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name } = matchedData(req, { locations: ["body"] });
 
     const tag = await TagModel.create({ name });
 
@@ -34,7 +36,7 @@ export const getAllTags = async (req, res) => {
 
 export const getTagById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req, { locations: ["params"] });
 
     const tag = await TagModel.findById(id);
 
@@ -57,8 +59,8 @@ export const getTagById = async (req, res) => {
 
 export const updateTag = async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = req.body;
+    const { id } = matchedData(req, { locations: ["params"] });
+    const data = matchedData(req, { locations: ["body"] });
 
     const tag = await TagModel.findById(id);
     if (!tag) {
@@ -86,7 +88,7 @@ export const updateTag = async (req, res) => {
 
 export const deleteTag = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req, { locations: ["params"] });
 
     const tag = await TagModel.findById(id);
     if (!tag) {
@@ -96,6 +98,8 @@ export const deleteTag = async (req, res) => {
     }
 
     const deletedTag = await TagModel.findByIdAndDelete(id);
+
+    await ArticleModel.updateMany({ tags: id }, { $pull: { tags: id } });
 
     return res.status(200).json({
       msg: "Etiqueta eliminada exitosamente",

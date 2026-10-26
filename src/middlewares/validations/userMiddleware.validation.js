@@ -50,6 +50,14 @@ export const createUserValidation = [
     .withMessage("El apellido debe tener entre 2 y 50 caracteres")
     .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
     .withMessage("El apellido solo debe contener letras"),
+  body("profile.biography")
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage("La biografía no puede superar los 500 caracteres"),
+  body("profile.birth_date").optional(),
+  // .isISO8601()
+  // .withMessage("La fecha de nacimiento no es válida (AAAA-MM-DD)"),
 ];
 
 export const updateUserValidation = [
@@ -61,7 +69,7 @@ export const updateUserValidation = [
     .withMessage("El id debe no tiene el formato correcto")
     .bail()
     .custom(async (id) => {
-      const user = await UserModel.findById(id);
+      const user = await UserModel.findOne({ _id: id, deleted: { $ne: true } });
       if (!user) {
         throw new Error("El usuario especificado no existe");
       }
@@ -70,6 +78,7 @@ export const updateUserValidation = [
   body("username")
     .optional()
     .trim()
+    .bail()
     .isLength({ min: 3, max: 20 })
     .withMessage("El nombre de usuario debe tener entre 3 y 20 caracteres")
     .bail()
@@ -114,6 +123,14 @@ export const updateUserValidation = [
     .withMessage("El apellido debe tener entre 2 y 50 caracteres")
     .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
     .withMessage("El apellido solo debe contener letras"),
+  body("profile.biography")
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage("La biografía no puede superar los 500 caracteres"),
+  body("profile.birth_date").optional(),
+  // .isISO8601()
+  // .withMessage("La fecha de nacimiento no es válida (AAAA-MM-DD)"),
 ];
 
 export const validateUserId = [
@@ -123,7 +140,10 @@ export const validateUserId = [
     .isMongoId()
     .withMessage("El id no tiene el formato correcto")
     .custom(async (id) => {
-      const user = await UserModel.findById(id);
+      const user = await UserModel.findOne({
+        _id: id,
+        deleted: { $ne: true },
+      });
       if (!user) {
         throw new Error("El usuario especificado no existe");
       }

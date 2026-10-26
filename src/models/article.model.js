@@ -17,7 +17,7 @@ const articleSchema = new Schema(
     },
     status: {
       type: String,
-      enun: ["published", "archived"],
+      enum: ["published", "archived"],
       required: false,
       default: "published",
     },
@@ -26,6 +26,12 @@ const articleSchema = new Schema(
       ref: "User",
       required: true,
     },
+    tags: [
+      {
+        type: Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
   },
   {
     versionKey: false,
